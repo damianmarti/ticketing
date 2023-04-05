@@ -31,8 +31,23 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
     autoMine: true,
   });
 
+  const metadata = await deploy("TicketMetadata", {
+    from: deployer,
+    log: true,
+  });
+
+  await deploy("TicketKiosk", {
+    from: deployer,
+    libraries: { TicketMetadata: metadata.address },
+    log: true,
+    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
+    // automatically mining the contract deployment transaction. There is no effect on live networks.
+    autoMine: true,
+  });
+
   // Get the deployed contract
-  // const yourContract = await hre.ethers.getContract("YourContract", deployer);
+  const contract = await hre.ethers.getContract("TicketKiosk", deployer);
+  await contract.transferOwnership("0x95f713A222A3b9996489044FF395dAEbA8a24D62");
 };
 
 export default deployYourContract;
