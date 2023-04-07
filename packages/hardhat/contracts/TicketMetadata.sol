@@ -3,9 +3,11 @@ pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
+import "./HexStrings.sol";
 
 library TicketMetadata {
   using Strings for uint256;
+  using HexStrings for uint160;
 
   function tokenURI(uint256 id, string memory svg) public pure returns (string memory) {
     string memory name = string.concat("Ticket #", id.toString());
@@ -39,7 +41,15 @@ library TicketMetadata {
       );
   }
 
-  function renderTicket(uint256 id) public pure returns (string memory) {
+  function renderTicket(
+    uint256 id,
+    string memory eventName,
+    string memory showName,
+    string memory sectionName,
+    uint256 seatId,
+    uint256 price,
+    address owner
+  ) public pure returns (string memory) {
     string memory render = string.concat(
       '<style type="text/css">',
       ".st0{fill:#629FFC;}",
@@ -100,26 +110,40 @@ library TicketMetadata {
       "</g>",
       '<text text-rendering="optimizeSpeed">',
       '<textPath startOffset="-100%" fill="white" font-family="\'Courier New\', monospace" font-size="10px" xlink:href="#text-path-a">',
-      "EVENTO \u25CF 2023-01-01",
+      eventName,
+      " \u25CF ",
+      showName,
       '<animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite"/>',
       "</textPath>",
       '<textPath startOffset="0%" fill="white" font-family="\'Courier New\', monospace" font-size="10px" xlink:href="#text-path-a">',
-      "EVENTO \u25CF 2023-01-01",
+      eventName,
+      " \u25CF ",
+      showName,
       '<animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite"/>',
       "</textPath>",
       '<textPath startOffset="50%" fill="white" font-family="\'Courier New\', monospace" font-size="10px" xlink:href="#text-path-a">',
-      "0x83843fb626e4349f6c51e335352d4860189022d9 \u25CF 0.1 ETH",
+      (uint160(owner)).toHexString(20),
+      " \u25CF ",
+      price.toString(),
+      " ETH",
       '<animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite"/>',
       "</textPath>",
       '<textPath startOffset="-50%" fill="white" font-family="\'Courier New\', monospace" font-size="10px" xlink:href="#text-path-a">',
-      "0x83843fb626e4349f6c51e335352d4860189022d9 \u25CF 0.1 ETH",
+      (uint160(owner)).toHexString(20),
+      " \u25CF ",
+      price.toString(),
+      " ETH",
       '<animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite"/>',
       "</textPath>",
       "</text>",
       '<g mask="url(#fade-symbol)">',
       '<rect fill="none" x="0px" y="0px" width="290px" height="200px"/>',
-      '<text y="70px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">EVENTO</text>',
-      '<text y="115px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">2023-01-01</text>',
+      '<text y="70px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">',
+      eventName,
+      "</text>",
+      '<text y="115px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">',
+      showName,
+      "</text>",
       "</g>",
       '<rect x="16" y="16" width="258" height="468" rx="26" ry="26" fill="rgba(0,0,0,0)" stroke="rgba(255,255,255,0.2)"/>',
       '<g style="transform:translate(480px, 0px)">',
@@ -138,11 +162,15 @@ library TicketMetadata {
       "</g>",
       '<g style="transform:translate(29px, 414px)">',
       '<rect width="140px" height="26px" rx="8px" ry="8px" fill="rgba(0,0,0,0.6)"/>',
-      '<text x="12px" y="17px" font-family="\'Courier New\', monospace" font-size="12px" fill="white"><tspan fill="rgba(255,255,255,0.6)">Section: </tspan>2</text>',
+      '<text x="12px" y="17px" font-family="\'Courier New\', monospace" font-size="12px" fill="white"><tspan fill="rgba(255,255,255,0.6)">Section: </tspan>',
+      sectionName,
+      "</text>",
       "</g>",
       '<g style="transform:translate(29px, 444px)">',
       '<rect width="140px" height="26px" rx="8px" ry="8px" fill="rgba(0,0,0,0.6)"/>',
-      '<text x="12px" y="17px" font-family="\'Courier New\', monospace" font-size="12px" fill="white"><tspan fill="rgba(255,255,255,0.6)">Seat: </tspan>102</text>',
+      '<text x="12px" y="17px" font-family="\'Courier New\', monospace" font-size="12px" fill="white"><tspan fill="rgba(255,255,255,0.6)">Seat: </tspan>',
+      seatId.toString(),
+      "</text>",
       "</g>"
     );
 

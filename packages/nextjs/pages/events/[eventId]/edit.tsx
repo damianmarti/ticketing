@@ -1,14 +1,14 @@
 import Head from "next/head";
 import type { NextPage } from "next";
 import { useRouter } from 'next/router'
-import { ContractData } from "~~/components/example-ui/ContractData";
-import { Checkin } from "~~/components/ticketing/Checkin";
+import { EventEdit } from "~~/components/ticketing/EventEdit";
+import { EventInfo } from "~~/components/ticketing/EventInfo";
 
-const CheckinPage: NextPage = () => {
+const EventsEditPage: NextPage = () => {
   const router = useRouter()
-  const { ticketId } = router.query
+  const { eventId } = router.query
 
-  console.log("ticketId: ", ticketId);
+  console.log("eventId: ", eventId);
 
   return (
     <>
@@ -20,11 +20,11 @@ const CheckinPage: NextPage = () => {
         <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree&display=swap" rel="stylesheet" />
       </Head>
       <div className="grid lg:grid-cols-2 flex-grow" data-theme="exampleUi">
-        <Checkin ticketId={ticketId} />
-        <ContractData />
+        <EventEdit eventId={eventId} />
+        <EventInfo eventId={eventId} />
       </div>
     </>
   );
 };
 
-export default CheckinPage;
+export default EventsEditPage;

@@ -1,14 +1,15 @@
 import Head from "next/head";
 import type { NextPage } from "next";
 import { useRouter } from 'next/router'
-import { ContractData } from "~~/components/example-ui/ContractData";
-import { Checkin } from "~~/components/ticketing/Checkin";
+import { EventInfo } from "~~/components/ticketing/EventInfo";
+import { SectionCreate } from "~~/components/ticketing/SectionCreate";
 
-const CheckinPage: NextPage = () => {
+const SectionsCreatePage: NextPage = () => {
   const router = useRouter()
-  const { ticketId } = router.query
+  const { eventId, showName } = router.query
 
-  console.log("ticketId: ", ticketId);
+  console.log("eventId: ", eventId);
+  console.log("showName: ", showName);
 
   return (
     <>
@@ -20,11 +21,11 @@ const CheckinPage: NextPage = () => {
         <link href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree&display=swap" rel="stylesheet" />
       </Head>
       <div className="grid lg:grid-cols-2 flex-grow" data-theme="exampleUi">
-        <Checkin ticketId={ticketId} />
-        <ContractData />
+        <SectionCreate eventId={eventId} showName={showName} />
+        <EventInfo eventId={eventId} />
       </div>
     </>
   );
 };
 
-export default CheckinPage;
+export default SectionsCreatePage;
