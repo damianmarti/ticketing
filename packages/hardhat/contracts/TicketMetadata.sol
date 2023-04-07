@@ -47,7 +47,6 @@ library TicketMetadata {
     string memory showName,
     string memory sectionName,
     uint256 seatId,
-    uint256 price,
     address owner
   ) public pure returns (string memory) {
     string memory render = string.concat(
@@ -123,16 +122,10 @@ library TicketMetadata {
       "</textPath>",
       '<textPath startOffset="50%" fill="white" font-family="\'Courier New\', monospace" font-size="10px" xlink:href="#text-path-a">',
       (uint160(owner)).toHexString(20),
-      " \u25CF ",
-      price.toString(),
-      " ETH",
       '<animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite"/>',
       "</textPath>",
       '<textPath startOffset="-50%" fill="white" font-family="\'Courier New\', monospace" font-size="10px" xlink:href="#text-path-a">',
       (uint160(owner)).toHexString(20),
-      " \u25CF ",
-      price.toString(),
-      " ETH",
       '<animate additive="sum" attributeName="startOffset" from="0%" to="100%" begin="0s" dur="30s" repeatCount="indefinite"/>',
       "</textPath>",
       "</text>",

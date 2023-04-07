@@ -56,7 +56,7 @@ export const EventInfo = ({ eventId }) => {
               <h3>{show.name}</h3>
               <h3>
                 Sections
-                <a href={`/events/${eventId}/shows/${show.id}/sections/create`}>Add</a>
+                <a href={`/events/${eventId}/shows/${show.name}/sections/create`}>Add</a>
               </h3>
               {show.sections.map((section, index) => (
                 <div key={index}>

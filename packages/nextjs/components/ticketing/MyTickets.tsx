@@ -19,19 +19,6 @@ export const MyTickets = () => {
 
   const { data: ticketContract } = useScaffoldContract({ contractName: "TicketKiosk" });
 
-  const {
-    data: events,
-    isLoading: isLoadingEvents,
-    error: errorReadingEvents,
-  } = useScaffoldEventHistory({
-    contractName: "TicketKiosk",
-    eventName: "EventAdded",
-    fromBlock: Number(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) || 0,
-    blockData: true,
-  });
-
-  console.log("events", isLoadingEvents, errorReadingEvents, events);
-
   useEffect(() => {
     const updateYourTickets = async () => {
       setIsLoading(true);

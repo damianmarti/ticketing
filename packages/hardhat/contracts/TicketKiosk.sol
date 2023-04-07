@@ -9,7 +9,7 @@ import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 import "./TicketMetadata.sol";
 
 contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
-  event EventAdded(uint256 indexed eventId, string indexed name, address indexed owner);
+  event EventAdded(uint256 indexed eventId, address indexed owner, string name);
   event ShowAdded(uint256 indexed eventId, string indexed name);
   event SectionAdded(
     uint256 indexed eventId,
@@ -19,6 +19,7 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
     uint256 price
   );
   event SeatBooked(uint256 indexed eventId, string indexed showName, string indexed sectionName, uint256 seatId);
+  event TokenAdmitted(uint256 tokenId, address holder);
 
   using ECDSA for bytes32;
 
@@ -26,11 +27,6 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
   uint256 public eventCount;
   uint256 public defaultPlataformEventFee = 0.1 ether;
   uint256 public defaultPlataformFee = 5; // 5% service fee
-  uint256 totalMint = 10000;
-
-  uint256 public immutable price = 0.01 ether;
-
-  // TODO: allow rows and seats to be configurable
 
   struct Section {
     string name;
@@ -93,10 +89,6 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
 
   mapping(uint256 => bool) admissions;
 
-  event tokenAdmitted(uint256 tokenId, address holder);
-
-  // eventos -> { name, sections(seats, price), shows(date, time)}
-
   modifier onlyEventOwner(uint256 eventId) {
     require(events[eventId].owner == msg.sender, "ONLY EVENT OWNER");
     _;
@@ -113,7 +105,7 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
     events[eventCount].owner = msg.sender;
     events[eventCount].plataformFee = defaultPlataformFee;
 
-    emit EventAdded(eventCount, _name, msg.sender);
+    emit EventAdded(eventCount, msg.sender, _name);
 
     return eventCount;
   }
@@ -153,31 +145,31 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
   }
 
   function eventInfo(uint256 eventId) public view returns (EventInfo memory) {
-    EventInfo memory eventInfo;
+    EventInfo memory eventInfoData;
 
-    eventInfo.name = events[eventId].name;
-    eventInfo.totalSeats = events[eventId].totalSeats;
-    eventInfo.totalBookedSeats = events[eventId].totalBookedSeats;
-    eventInfo.amountRaised = events[eventId].amountRaised;
-    eventInfo.plataformFee = events[eventId].plataformFee;
-    eventInfo.owner = events[eventId].owner;
-    eventInfo.shows = new ShowInfo[](events[eventId].nameShows.length);
+    eventInfoData.name = events[eventId].name;
+    eventInfoData.totalSeats = events[eventId].totalSeats;
+    eventInfoData.totalBookedSeats = events[eventId].totalBookedSeats;
+    eventInfoData.amountRaised = events[eventId].amountRaised;
+    eventInfoData.plataformFee = events[eventId].plataformFee;
+    eventInfoData.owner = events[eventId].owner;
+    eventInfoData.shows = new ShowInfo[](events[eventId].nameShows.length);
     for (uint256 i = 0; i < events[eventId].nameShows.length; i++) {
-      eventInfo.shows[i].name = events[eventId].nameShows[i];
-      eventInfo.shows[i].sections = new SectionInfo[](
+      eventInfoData.shows[i].name = events[eventId].nameShows[i];
+      eventInfoData.shows[i].sections = new SectionInfo[](
         events[eventId].shows[events[eventId].nameShows[i]].nameSections.length
       );
       for (uint256 j = 0; j < events[eventId].shows[events[eventId].nameShows[i]].nameSections.length; j++) {
-        eventInfo.shows[i].sections[j].name = events[eventId].shows[events[eventId].nameShows[i]].nameSections[j];
-        eventInfo.shows[i].sections[j].totalSeats = events[eventId]
+        eventInfoData.shows[i].sections[j].name = events[eventId].shows[events[eventId].nameShows[i]].nameSections[j];
+        eventInfoData.shows[i].sections[j].totalSeats = events[eventId]
           .shows[events[eventId].nameShows[i]]
           .sections[events[eventId].shows[events[eventId].nameShows[i]].nameSections[j]]
           .totalSeats;
-        eventInfo.shows[i].sections[j].price = events[eventId]
+        eventInfoData.shows[i].sections[j].price = events[eventId]
           .shows[events[eventId].nameShows[i]]
           .sections[events[eventId].shows[events[eventId].nameShows[i]].nameSections[j]]
           .price;
-        eventInfo.shows[i].sections[j].bookedSeats = new uint256[](
+        eventInfoData.shows[i].sections[j].bookedSeats = new uint256[](
           events[eventId]
             .shows[events[eventId].nameShows[i]]
             .sections[events[eventId].shows[events[eventId].nameShows[i]].nameSections[j]]
@@ -199,25 +191,22 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
               .sections[events[eventId].shows[events[eventId].nameShows[i]].nameSections[j]]
               .bookedSeats[l]
           ) {
-            eventInfo.shows[i].sections[j].bookedSeats[k] = l;
+            eventInfoData.shows[i].sections[j].bookedSeats[k] = l;
             k++;
           }
         }
       }
     }
 
-    return eventInfo;
+    return eventInfoData;
   }
 
-  function buyTicket2(
+  function buyTicket(
     uint256 eventId,
     string memory showName,
     string memory sectionName,
     uint256 seatId
   ) public payable returns (uint256 tokenId) {
-    // require(msg.value >= price, "Not enough ETH sent");
-    // require(balanceOf(msg.sender) < 1, "1 ticket allowed per address");
-    // require(currentlyMinted < totalMint, "Tickets are sold out");
     require(bytes(events[eventId].name).length > 0, "Event does not exist");
     require(bytes(events[eventId].shows[showName].name).length > 0, "Show does not exist");
     require(bytes(events[eventId].shows[showName].sections[sectionName].name).length > 0, "Section does not exist");
@@ -277,19 +266,7 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
     string memory sectionName = tickets[id].sectionName;
     uint256 seatId = tickets[id].seatId;
 
-    return
-      TicketMetadata.renderTicket(id, ticketEventName, showName, sectionName, seatId, tickets[id].price, ownerOf(id));
-  }
-
-  function buyTicket() public payable returns (uint256 tokenId) {
-    require(msg.value >= price, "Not enough ETH sent");
-    require(balanceOf(msg.sender) < 1, "1 ticket allowed per address");
-    require(currentlyMinted < totalMint, "Tickets are sold out");
-
-    currentlyMinted += 1;
-    tokenId = currentlyMinted;
-
-    _mint(msg.sender, tokenId);
+    return TicketMetadata.renderTicket(id, ticketEventName, showName, sectionName, seatId, ownerOf(id));
   }
 
   function admitHolder(uint256 tokenId, bytes memory signature) public onlyOwner {
@@ -306,11 +283,8 @@ contract TicketKiosk is ERC721Enumerable, EIP712, Ownable {
 
     admissions[tokenId] = true;
 
-    emit tokenAdmitted(tokenId, msg.sender);
+    emit TokenAdmitted(tokenId, msg.sender);
   }
 
-  // to support receiving ETH by default
-  receive() external payable {}
-
-  fallback() external payable {}
+  // TODO: add withdraw functions
 }
