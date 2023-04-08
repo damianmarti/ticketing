@@ -1,6 +1,6 @@
 import Head from "next/head";
 import type { NextPage } from "next";
-import { ContractData } from "~~/components/example-ui/ContractData";
+import { Events } from "~~/components/ticketing/Events";
 import { EventCreate } from "~~/components/ticketing/EventCreate";
 
 const EventsCreatePage: NextPage = () => {
@@ -15,7 +15,7 @@ const EventsCreatePage: NextPage = () => {
             </Head>
             <div className="grid lg:grid-cols-2 flex-grow" data-theme="exampleUi">
                 <EventCreate />
-                <ContractData />
+                <Events />
             </div>
         </>
     );

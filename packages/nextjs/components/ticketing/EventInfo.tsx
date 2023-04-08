@@ -41,32 +41,38 @@ export const EventInfo = ({ eventId }) => {
     <div className="flex flex-col justify-center items-center bg-[url('/assets/gradient-bg.png')] bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw]">
       {eventInfo && (
         <div
-          className={`flex flex-col max-w-md bg-base-200 bg-opacity-70 rounded-2xl shadow-lg px-5 py-4 w-full`}
+          className="flex flex-col max-w-md bg-base-200 bg-opacity-70 rounded-2xl shadow-lg px-5 py-4 w-full"
         >
           <Address address={eventInfo.owner} />
-          <h1>{eventInfo.name}</h1>
-          <h2>Total Seats: {eventInfo.totalSeats.toString()} ({eventInfo.totalBookedSeats.toString()} booked})</h2>
-          <h2>Amount Raised: {eventInfo.amountRaised.toString()}</h2>
-          <h2>
+          <h2 className="font-black text-2xl">{eventInfo.name}</h2>
+          <p className="my-1"><strong>Total Seats:</strong> {eventInfo.totalSeats.toString()} ({eventInfo.totalBookedSeats.toString()} booked)</p>
+          <p className="my-1"><strong>Amount Raised:</strong> {utils.formatEther(eventInfo.amountRaised.toString())} ETH</p>
+          <h3 className="mt-2 font-bold text-xl">
             Shows
-            <a href={`/events/${eventId}/shows/create`}>Add</a>
-          </h2>
-          {eventInfo.shows.map((show, index) => (
-            <div key={index}>
-              <h3>{show.name}</h3>
-              <h3>
-                Sections
-                <a href={`/events/${eventId}/shows/${show.name}/sections/create`}>Add</a>
-              </h3>
-              {show.sections.map((section, index) => (
-                <div key={index}>
-                  <h4>{section.name}</h4>
-                  <h4>Total Seats: {section.totalSeats.toString()} ({section.bookedSeats.length} booked})</h4>
-                  <h4>Price: {utils.formatEther(section.price.toString())} ETH</h4>
-                </div>
-              ))}
-            </div>
-          ))}
+            <a className="font-normal text-l mx-1" href={`/events/${eventId}/shows/create`}>+</a>
+          </h3>
+          <ul className="list-disc list-inside">
+            {eventInfo.shows.map((show, index) => (
+              <li className="mb-3" key={index}>
+                {show.name}
+                <h4 className="my-1 mx-5 font-bold text-l">
+                  Sections
+                  <a className="font-normal text-l mx-1" href={`/events/${eventId}/shows/${show.name}/sections/create`}>+</a>
+                </h4>
+                <ul className="list-disc list-inside mx-5">
+                  {show.sections.map((section, index) => (
+                    <li className="mb-3" key={index}>
+                      {section.name}
+                      <div className="mx-10">
+                        <p className="my-1"><strong>Total Seats:</strong> {section.totalSeats.toString()} ({section.bookedSeats.length} booked})</p>
+                        <p className="my-1"><strong>Price:</strong> {utils.formatEther(section.price.toString())} ETH</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

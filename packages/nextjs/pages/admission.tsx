@@ -1,6 +1,5 @@
 import Head from "next/head";
 import type { NextPage } from "next";
-import { ContractData } from "~~/components/example-ui/ContractData";
 import { Admission } from "~~/components/ticketing/Admission";
 
 const AdmissionPage: NextPage = () => {
@@ -15,7 +14,6 @@ const AdmissionPage: NextPage = () => {
             </Head>
             <div className="grid lg:grid-cols-2 flex-grow" data-theme="exampleUi">
                 <Admission />
-                <ContractData />
             </div>
         </>
     );

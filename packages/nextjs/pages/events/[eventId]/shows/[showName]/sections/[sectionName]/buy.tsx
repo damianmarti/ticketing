@@ -1,7 +1,7 @@
 import Head from "next/head";
 import type { NextPage } from "next";
 import { useRouter } from 'next/router'
-import { ContractData } from "~~/components/example-ui/ContractData";
+import { Events } from "~~/components/ticketing/Events";
 import { Buy } from "~~/components/ticketing/Buy";
 
 const BuyPage: NextPage = () => {
@@ -23,7 +23,7 @@ const BuyPage: NextPage = () => {
             </Head>
             <div className="grid lg:grid-cols-2 flex-grow" data-theme="exampleUi">
                 <Buy eventId={eventId} showName={showName} sectionName={sectionName} />
-                <ContractData />
+                <Events />
             </div>
         </>
     );

@@ -1,6 +1,6 @@
 import Head from "next/head";
 import type { NextPage } from "next";
-import { ContractData } from "~~/components/example-ui/ContractData";
+import { Events } from "~~/components/ticketing/Events";
 import { MyTickets } from "~~/components/ticketing/MyTickets";
 
 const MyTicketsPage: NextPage = () => {
@@ -15,7 +15,7 @@ const MyTicketsPage: NextPage = () => {
             </Head>
             <div className="grid lg:grid-cols-2 flex-grow" data-theme="exampleUi">
                 <MyTickets />
-                <ContractData />
+                <Events />
             </div>
         </>
     );
