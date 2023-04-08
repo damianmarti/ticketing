@@ -44,9 +44,8 @@ export const SectionCreate = ({ eventId, showName }) => {
       <HareIcon className="absolute right-0 bottom-24" />
       <div className="flex flex-col w-full mx-5 sm:mx-8 2xl:mx-20">
         <div className="flex flex-col mt-6 px-7 py-8 bg-base-200 opacity-80 rounded-2xl shadow-lg border-2 border-primary">
-          <span className="text-l sm:text-6xl text-black">Event: {eventName}</span>
-          <span className="text-l sm:text-6xl text-black">Show: {showName}</span>
-          <span className="text-4xl sm:text-6xl text-black">Create new section</span>
+          <h2 className="text-6xl text-black">{eventName} - {showName}</h2>
+          <h3 className="text-4xl text-black">Create New Section</h3>
 
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
             <input

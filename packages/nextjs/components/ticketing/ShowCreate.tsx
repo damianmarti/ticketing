@@ -40,7 +40,8 @@ export const ShowCreate = ({ eventId }) => {
       <HareIcon className="absolute right-0 bottom-24" />
       <div className="flex flex-col w-full mx-5 sm:mx-8 2xl:mx-20">
         <div className="flex flex-col mt-6 px-7 py-8 bg-base-200 opacity-80 rounded-2xl shadow-lg border-2 border-primary">
-          <span className="text-4xl sm:text-6xl text-black">Create show for Event: {eventName}</span>
+          <h2 className="text-6xl text-black">{eventName}</h2>
+          <h3 className="text-4xl text-black">Create Show</h3>
 
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-5">
             <input
